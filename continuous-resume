@@ -1,0 +1,398 @@
+#!/bin/bash
+
+#running loop to ask questions
+count=0
+if [ $# -lt 1 ]; then
+    echo $'\n\t ALTERNATIVE usage: continuous-resume [y]'
+    echo $'\t for testing purposes\n'
+fi
+
+until [[ $cont == "N" || $cont == "n" ]] ; do
+    
+    if [[ $1 == "Y" || $1 == "y" ]]; then
+        pub="y"
+        intellican="y"
+        host="y"
+        can="y"
+        ocular="y"
+        ocdig="y"
+        ecc="y"
+        traffic="y"
+        pybash="y"
+        adder="y"
+        ta="y"
+        techm="y"
+        echo "....intializing everything to 'y' already"
+    fi
+
+    if [[ $count == 0 ]]; then
+        echo "...building resume for first time"
+    elif [[ $count > 0 ]]; then
+        echo $'...round #'$count 'of re-building resume'
+    fi
+    
+    # ask for filename and create it
+    if [[ $count == 0 ]]; then
+        echo -n "Enter the filename you want (.tex will be added automatically): "
+        read fn
+        filename=$fn.tex
+    fi
+    
+    #------------------------SUMMARY------------------------------#
+    # ask to create summary or objective
+    echo -n  "You want Summary or Objective? (s/o): "
+    read so
+    if [[ $so == "s" ]]; then
+        objfile=objective.txt
+        echo "Write your summary in the editor, then close it to continue."
+        sleep 1
+        nano $objfile
+    elif [[ $so == "o" ]]; then
+        objfile=objective.txt
+        echo "Write your objective in the editor, then close it to continue."
+        sleep 1
+        nano $objfile
+    fi
+    
+    if [[ $1 != "y" ]]; then
+        #------------------------PUBLICATIONS------------------------------#
+        # ask user if he/she wants to include any publications
+        echo -n  "Include publication? (y/n): "
+        read pub   
+        if [[ $pub == "Y" || $pub == "y" ]]; then
+            echo -n  "Include IntelliCAN publication? (y/n): "
+            read intellican
+        fi  
+        if [[ $pub == "Y" || $pub == "y" ]]; then
+            echo -n  "Include HOST presentation? (y/n): "
+            read host
+        fi
+        
+        #------------------------PROJECTS------------------------------#
+        # ask if CAN project should be included
+        echo -n  'Include "CAN" project? (y/n): '
+        read can
+        
+        # ask if Ocular pulse project should be included
+        echo -n  'Include "Ocular pulse measurement" project? (y/n): '
+        read ocular
+        
+        #ask if Ocular pulse project with the digital/mixed signal part variant should be included
+        echo -n  'Include "DIGITAL part of Ocular pulse measurement" project? (y/n): '
+        read ocdig
+        
+        # ask if error correcting code project should be included
+        echo -n  'Include "Error Control coding" project? (y/n): '
+        read ecc
+            
+        # ask if traffic light project should be included
+        echo -n  'Include "Smart Traffic Lights" project? (y/n): '
+        read traffic
+        
+        # ask if scripting related project should be included
+        echo -n  'Include "Scripting" project? (y/n): '
+        read pybash
+        
+        # ask if full adder project should be included
+        echo -n  'Include "Full adder layout" project? (y/n): '
+        read adder
+        
+        #------------------------WORK EXPERIENCE------------------------------#
+        # ask if TA work-ex should be included
+        echo -n  'Include TA work-ex? (y/n): '
+        read ta
+        
+        # ask if TechM work-ex should be included
+        echo -n  'Include TechM work-ex? (y/n): '
+        read techm
+    fi
+
+    #getting started with the document
+    cat > $filename <<'HEADER'
+    \documentclass[11pt]{article}
+    \usepackage[paperwidth=8.5in, paperheight=11in, margin = 0.5in]{geometry}
+    \usepackage[urlcolor=blue,colorlinks=true]{hyperref}
+    \renewcommand{\rmdefault}{cmss}
+    \renewcommand{\sfdefault}{cmss}
+    \hyphenation{microcontroller production}
+
+    \begin{document}
+    \thispagestyle{empty}
+    % % % % % % %
+    % Header section
+    % % % % % % %
+    \begin{center}
+        \textbf{\Large{MOHAMMAD RAASHID ANSARI}}\\
+        603-609-8279\\
+        \href{mailto:m.raashid.ansari@gmail.com}{m.raashid.ansari@gmail.com}\\
+        172 Forest Park, Durham NH 03824\\
+        \href{https://www.linkedin.com/in/raashidansari}{linkedin.com/in/raashidansari}
+    \end{center}
+HEADER
+
+    #checking if summary is needed or objective
+    if [[ $so == "s" ]] ; then
+        cat >> $filename <<'SUMMARY'
+        % % % % % % %
+        % Summary section
+        \begin{center}
+            \emph{
+SUMMARY
+        if [[ $so == "s" ]]; then
+            cat $objfile >> $filename
+         #   echo "\\\\" >> $filename
+         #   echo " " >> $filename
+            echo $'}\n\\end{center}' >> $filename
+            echo "....Summary written in" $filename
+        fi
+        
+    elif [[ $so == "o" ]] ; then
+        cat >> $filename <<'OBJECTIVE'
+        % % % % % % %
+        % Objective section
+        % % % % % % %
+        \begin{center}
+            \emph{
+OBJECTIVE
+        if [[ $so == "o" ]]; then
+            cat $objfile >> $filename
+         #   echo "\\\\" >> $filename
+         #   echo " " >> $filename
+            echo $'}\n\\end{center}' >> $filename
+            echo "....Objective written in" $filename
+        fi
+    fi
+
+    cat >> $filename <<'EDUCATION'
+    % % % % % % %
+    % Education section
+    % % % % % % %
+    {\noindent\textbf{\large{Education}}\vspace{-0.5pc}
+    
+    {\noindent\rule{\columnwidth}{0.2pt}}
+    Master of Science in Electrical Engineering (MSEE)\hfill Expected:
+    Sept 2016\\
+    \emph{University of New Hampshire, Durham, NH\hfill GPA: 3.64}}\\
+    
+EDUCATION
+    echo "....Education written"
+    if [[ $pub == "Y" || $pub == "y" ]]; then
+        cat >> $filename <<'PUBLICATIONS'
+        % % % % % % %
+        % Publications section
+        % % % % % % %
+        {\noindent\textbf{\large{Publications and Presentations}}}\vspace{-0.5pc}
+        
+        {\noindent\rule{\columnwidth}{0.2pt}}
+        \begin{itemize}
+PUBLICATIONS
+    fi
+    if [[ $intellican == "Y" || $intellican == "y" ]]; then
+        cat >> $filename <<'INTELLICAN'
+            \item "IntelliCAN: Attack-resilient Controller Area Network (CAN) for secure automobiles," \emph{2015 IEEE International Symposium on Defect and Fault Tolerance in VLSI and Nanotechnology Systems (DFTS)}, Amherst, MA, 2015, pp. 233-236.
+INTELLICAN
+    fi
+    if [[ $host == "Y" || $host == "y" ]]; then
+        cat >> $filename <<'HOST'
+            \item "Prototype Demonstration of Secure Controller Area Network against Masquerade and Replay Attacks," \emph{2016 IEEE International Symposium on Hardware Oriented Security and Trust (HOST)}, McLean, VA, 2016.
+HOST
+    fi
+    if [[ $pub == "Y" || $pub == "y" ]]; then
+        cat >> $filename <<'ENDPUB'
+        \end{itemize}
+ENDPUB
+    fi
+    echo "....Publications done"
+    
+    cat >> $filename <<'PROJECTS'
+    % % % % % % %
+    % Projects section
+    % % % % % % %
+    {\noindent\textbf{\large{Projects}}\vspace{-0.5pc}
+
+    {\noindent\rule{\columnwidth}{0.2pt}}
+PROJECTS
+
+    if [[ $can == "Y" || $can == 'y' ]]; then
+    cat >> $filename <<'CAN'
+    \textbf{Low-Cost method to prevent masquerade \& replay attacks on CAN}\hfill Jun 2015 -- May 2016
+    \begin{itemize}
+        \item Devised a novel method to prevent attacks on Controller Area Network; implemented on PIC16 uCs in C.
+        \item Presented hardware demo at Hardware-Oriented Security and Trust (HOST) symposium 2016.
+    \end{itemize}
+CAN
+    fi
+    
+    if [[ $ocular == "Y" || $ocular == 'y' ]]; then
+    cat >> $filename <<'OCULAR'
+    \textbf{Non-invasive Ocular Pulse Measurement System}\hfill Oct 2015 -- Dec 2015
+    \begin{itemize}
+        \item Built an on-board prototype of an analog non-invasive ocular pulse to predict stroke conditions in a patient.
+    \end{itemize}
+OCULAR
+    fi
+    
+    if [[ $ocdig == "Y" || $ocdig == 'y' ]]; then
+    cat >> $filename <<'OCULARDIGITAL'
+    \textbf{Range-Measurement Circuit for a Non-invasive Ocular Pulse Measurement System}\hfill Oct 2015 -- Dec 2015
+    \begin{itemize}
+        \item Built an on-board prototype of an analog non-invasive ocular pulse to predict stroke conditions in a patient.
+        \item Created a digital circuit on a PSoC to digitally calculate the pulsing of the cornea in an eye.
+    \end{itemize}
+OCULARDIGITAL
+    fi
+
+    if [[ $ecc == "Y" || $ecc == 'y' ]]; then
+    cat >> $filename <<'ECC'
+    \textbf{Soft-Error Detection \& Correction using concatenated CRC \& Hamming Codes}\hfill Nov 2015 -- Dec 2015
+    \begin{itemize}
+        \item Produced 97\% soft-error detection rate by combining CRC and Hamming codes; developed using Verilog.
+    \end{itemize}
+ECC
+    fi
+    
+    if [[ $traffic == "Y" || $traffic == 'y' ]]; then
+    cat >> $filename <<'TRAFFIC'
+    \textbf{Smart Traffic Light System}\hfill Apr 2015 -- May 2015
+    \begin{itemize}
+        \item Implemented RTL in Verilog for a configurable timing module for a ``Smart Traffic-light" group project.
+        \item Achieved zero timing violations in post-synthesis; tested using Synopsys' Design Vision software.
+    \end{itemize}
+TRAFFIC
+    fi
+    
+    if [[ $pybash == "Y" || $pybash == "y" ]]; then
+    cat >> $filename <<'SCRIPTING'
+    \textbf{Pattern Matching File Search Script}\hfill Apr 2015 -- May 2015
+    \begin{itemize}
+        \item Created a grep-like pattern searching script in multiple files using bash and python; improved script using regular expression support.
+    \end{itemize}
+SCRIPTING
+    fi
+
+    if [[ $adder == "Y" || $adder == 'y' ]]; then
+    cat >> $filename <<'ADDER'
+    \textbf{4-bit Full Adder}\hfill Nov 2014 -- Dec 2014
+      \begin{itemize}
+        \item Performed custom place \& route, DRC \& LVS tests, and QRC parasitic element extraction to complete the layout process of a 4-bit ripple carry full adder at 180nm technology in Cadence Virtuoso software.
+      \end{itemize}
+ADDER
+    fi
+    echo "....Projects written"
+
+    cat >> $filename <<'WORKEXP'
+    % % % % % % %
+    % Work Experience section
+    % % % % % % %
+    {\noindent\textbf{\large{Work Experience}}\vspace{-0.5pc}
+
+    {\noindent\rule{\columnwidth}{0.2pt}}
+WORKEXP
+    
+    if [[ $ta == "Y" || $ta == "y" ]]; then
+    cat >> $filename <<'TA'
+    \textbf{Teaching Assistant}\hfill Jan 2015 -- Present\\
+    \emph{University of New Hampshire, Durham NH}
+    \begin{itemize}
+      \item Tutor on topics related to FPGA, Verilog, C, and Assembly programming on PSoC4 kit and PIC16 uC.
+      \item Guide a class of 60 students in hands-on labs involving assembly programming on HCS12 uC.
+    \end{itemize}
+TA
+    fi
+    
+    if [[ $techm == "Y" || $techm == "y" ]]; then
+    cat >> $filename <<'TECHM'
+    \textbf{Test Engineer}\hfill Jun 2011 -- May 2014\\
+    \emph{Tech Mahindra Ltd., Pune, Maharashtra, India}
+    \begin{itemize}
+        \item Enhanced test coverage of software by 60\% by developing automated tests in Visual Basic.
+        \item Redesigned best practices among globally based development, testing, and production teams to achieve 100\% test coverage; delivered business critical functionalities for British Telecom.
+    \end{itemize}
+TECHM
+    fi
+    echo "....Work experience written"
+    cat >> $filename << 'TECHSKILLS'
+    % % % % % % %
+    % Technical Skills section
+    % % % % % % %
+    {\noindent\textbf{\large{Technical Skills}}\vspace{-0.5pc}
+
+    {\noindent\rule{\columnwidth}{0.2pt}}
+    \begin{minipage}[t]{0.5\textwidth}
+        \begin{flushleft}
+            {\noindent\textbf{Tools:} Cadence Virtuoso, Synopsys NCSim, Design Vision, Microchip MPLAB, PSoC Creator, MultiSim, git}\\
+            {\noindent\textbf{O.S.:} Windows (7, 10), Linux (Ubuntu, elementaryOS)}\\
+        \end{flushleft}
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+        \begin{flushleft}
+            {\noindent\textbf{Programming Languages:} Verilog, C, Python, Bash shell, MATLAB}\\
+            {\noindent\textbf{Bus Interfaces:} CAN, SPI, I2C, UART}
+        \end{flushleft}
+    \end{minipage}
+TECHSKILLS
+    echo "....Technical skills written"
+#    cat >> $filename <<'TECHSKILLS'
+#    % % % % % % %
+#    % Technical Skills section
+#    % % % % % % %
+#    {\noindent\textbf{\large{Technical Skills}}\vspace{-0.5pc}
+
+#    {\noindent\rule{\columnwidth}{0.2pt}}
+#    \flushleft
+#    \begin{tabular}{l|l}
+#    \textbf{Tools:} & \textbf{Platforms:} \\ 
+#    Cadence Virtuoso, Synopsys NCSim, Design Vision, & Windows, Linux (Debian) \\
+#    Microchip MPLAB, PSoC Creator, MultiSim & \\
+#    \textbf{Programming Languages:} & \textbf{Bus Interfaces:} \\ 
+#    Verilog, C, Python, Bash shell, MATLAB & CAN, SPI, I2C, UART \\ 
+#    \end{tabular} 
+#TECHSKILLS
+
+    cat >> $filename <<'END'
+    \end{document}
+END
+    echo "....Finished writing the document...."
+    
+((count=count+1))
+
+# if one wants to re-build resume then, delete the old file and start anew
+if [[ $count > 0 ]]; then
+    echo -n  "Do you want to rebuild your resume? (Y/N): "
+    read cont
+    if [[ $cont == "Y" || $cont == "y" ]]; then
+        rm $filename
+    fi
+fi
+
+done
+
+###################################
+# compiling the file if it exists #
+###################################
+if [ -e $filename ] ; then
+  echo "...compiling $filename for pdf..."
+  pdflatex -synctex=1 -interaction=nonstopmode $filename
+  echo '...compilation done...'
+else
+  echo "...$filename doesn't exist"
+fi
+
+#cleaning extra files
+if [ -e $fn.aux ] ; then
+  echo "...cleaning $fn.aux file..."
+  rm $fn.aux
+fi
+
+if [ -e $fn.log ] ; then
+  echo "...cleaning $fn.log file..."
+  rm $fn.log
+fi
+
+if [ -e $fn.synctex.gz ] ; then
+  echo "...cleaning $fn.synctex.gz file..."
+  rm $fn.synctex.gz
+fi
+
+nohup evince $fn.pdf &
+exit 0
